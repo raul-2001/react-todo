@@ -5,13 +5,18 @@ import AddTodoForm from './AddTodoForm';
 
 // View part of react
 function App() {
+
+  const [newTodo, setNewTodo] = React.useState('');
+
   return (
-    <div>
+    <div>     
       <h1>Todo List</h1>
-      <AddTodoForm/>
+      <AddTodoForm onAddTodo={setNewTodo}/>
+      <p>
+        Title: <strong>{newTodo}</strong>
+      </p>
       <hr/>
       <TodoList/>
-
     </div>
   );
 }
