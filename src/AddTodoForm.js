@@ -1,7 +1,7 @@
 import React from "react";
 
 // Funtion decleared
-let AddTodoForm = ({onAddTodo}) => { 
+const AddTodoForm = ({onAddTodo}) => { 
 
     const [todoTitle, setTodoTitle] = React.useState('');
 
