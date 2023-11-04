@@ -1,7 +1,7 @@
 import React from "react";
 
 // Funtion decleared
-let AddTodoForm = (props) => { 
+let AddTodoForm = ({onAddTodo}) => { 
 
     const [todoTitle, setTodoTitle] = React.useState('');
 
@@ -16,14 +16,15 @@ let AddTodoForm = (props) => {
             title: todoTitle,
             id: Date.now(),
         };
-        props.onAddTodo(newTodo);
+        onAddTodo(newTodo);
+        setTodoTitle("");
     }
 
     return(
     <form onSubmit={handleAddTodo}>
         <label htmlFor="todoTitle">Title</label>
-        <input id="todoTitle" type="text" name="title" value={props.todoTitle} onChange={handleTitleChange}></input>
-        <button type="button" >Add</button>
+        <input id="todoTitle" type="text" name="title" value={todoTitle} onChange={handleTitleChange}></input>
+        <button type="submit" >Add</button>
     </form>
 );
 }
