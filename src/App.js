@@ -2,7 +2,7 @@ import React from 'react';
 import TodoList from './TodoList';
 import AddTodoForm from './AddTodoForm';
 
-
+// Custom Hooks
 const useSemiPersistentState = (key, initialState) => {
 
   // We read the saved data from local storage
