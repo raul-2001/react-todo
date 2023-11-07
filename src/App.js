@@ -3,20 +3,36 @@ import TodoList from './TodoList';
 import AddTodoForm from './AddTodoForm';
 
 
+const useSemiPersistentState = (key, initialState) => {
+
+  // We read the saved data from local storage
+    const savedTodoList = JSON.parse(localStorage.getItem(key))
+
+    const [value, setValue] = React.useState(savedTodoList || initialState);
+
+      // using useEffect storing the data to local storage
+    React.useEffect(() => {
+      localStorage.setItem(key, JSON.stringify(value));
+    }, [value, key])
+
+    return [value, setValue]
+}
+
 // View part of react
 function App() {
 
-  //const [newTodo, setNewTodo] = React.useState('');
 
-  const [todoList, setTodoList] = React.useState([]);
+  const [todoList, setTodoList] = useSemiPersistentState('savedTodoList', []);
+
+
+
 
   const addTodo = (newTodo) => {
     setTodoList([...todoList, newTodo]);
-    
   }
 
   return (
-    <div>     
+    <>     
       <h1>Todo List</h1>
       <AddTodoForm onAddTodo={addTodo}/>
       {/* <p>
@@ -24,7 +40,7 @@ function App() {
       </p> */}
       <hr/>
       <TodoList todoList={todoList}/>
-    </div>
+    </>
   );
 }
 
