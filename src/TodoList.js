@@ -3,17 +3,16 @@ import TodoListItem from "./TodoListItem";
 
 // Funtion decleared
 const TodoList = ({todoList}) => (
-  <div>
-    
+  <>
     <ul>
         {todoList.map(function(item) {
         return (
-          <TodoListItem key={item.id} title={item.title}/>
+          <TodoListItem key={item.id} item={item}/>
             );
             }
         )}
-  </ul>
-  </div>
+    </ul>
+  </>
 );
 
 
