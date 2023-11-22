@@ -3,28 +3,35 @@ import TodoList from './TodoList';
 import AddTodoForm from './AddTodoForm';
 
 
-const useSemiPersistentState = (key, initialState) => {
-
-  // We read the saved data from local storage
-    const savedTodoList = JSON.parse(localStorage.getItem(key))
-
-    const [value, setValue] = React.useState(savedTodoList || initialState);
-
-      // using useEffect storing the data to local storage
-    React.useEffect(() => {
-      localStorage.setItem(key, JSON.stringify(value));
-    }, [value, key])
-
-    return [value, setValue]
-}
 
 // View part of react
 function App() {
 
+// We read the saved data from local storage
+  const savedTodoList = JSON.parse(localStorage.getItem('search'))
+  const [searchTerm, setSearchTerm] = React.useState(savedTodoList || 'initialState');
 
-  const [todoList, setTodoList] = useSemiPersistentState('savedTodoList', []);
+  const [todoList, setTodoList] = React.useState(
+    []
+  );
 
+  const [isLoading, setIsLoading] = React.useState(true);
 
+  React.useEffect(() => {
+    const fetchData = new Promise((resolve, reject) => {
+      setTimeout(() =>{
+        resolve({data: {todoList: JSON.parse(localStorage.getItem('savedTodoList')) || [] }});
+      }, 2000);
+    });
+
+    fetchData
+      .then((result) => {
+        setTodoList(result.data.todoList)
+      });
+
+      setIsLoading(false);
+
+  }, [])
 
 
   const addTodo = (newTodo) => {
@@ -38,6 +45,14 @@ function App() {
     setTodoList(updatedList);
   }
 
+  // useEffect for storing data to local storage
+  React.useEffect(() => {
+    if (isLoading) {
+      localStorage.setItem('search', JSON.stringify(todoList));
+    }
+    
+  }, [todoList, isLoading])
+
   return (
     <>     
       <h1>Todo List</h1>
@@ -46,7 +61,11 @@ function App() {
         Title: <strong>{newTodo}</strong>
       </p> */}
       <hr/>
-      <TodoList todoList={todoList} onRemoveTodo={removeTodo}/>
+
+      {isLoading? ("Loading"):
+        (<TodoList todoList={todoList} onRemoveTodo={removeTodo}/>)
+      }
+      
     </>
   );
 }
