@@ -2,7 +2,7 @@ import React from "react";
 import InputWithLabel from "./InputWithLabel";
 
 // Funtion decleared
-let AddTodoForm = ({onAddTodo}) => { 
+const AddTodoForm = ({onAddTodo}) => { 
 
     const [todoTitle, setTodoTitle] = React.useState('');
 
