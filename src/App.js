@@ -7,10 +7,6 @@ import AddTodoForm from './AddTodoForm';
 // View part of react
 function App() {
 
-// We read the saved data from local storage
-  const savedTodoList = JSON.parse(localStorage.getItem('search'))
-  const [searchTerm, setSearchTerm] = React.useState(savedTodoList || 'initialState');
-
   const [todoList, setTodoList] = React.useState(
     []
   );
@@ -29,7 +25,7 @@ function App() {
         setTodoList(result.data.todoList)
       });
 
-      setIsLoading(false);
+    setIsLoading(false);
 
   }, [])
 
@@ -48,7 +44,7 @@ function App() {
   // useEffect for storing data to local storage
   React.useEffect(() => {
     if (isLoading) {
-      localStorage.setItem('search', JSON.stringify(todoList));
+      localStorage.setItem('savedTodoList', JSON.stringify(todoList));
     }
     
   }, [todoList, isLoading])
@@ -57,15 +53,10 @@ function App() {
     <>     
       <h1>Todo List</h1>
       <AddTodoForm onAddTodo={addTodo}/>
-      {/* <p>
-        Title: <strong>{newTodo}</strong>
-      </p> */}
       <hr/>
-
       {isLoading? ("Loading"):
         (<TodoList todoList={todoList} onRemoveTodo={removeTodo}/>)
       }
-      
     </>
   );
 }
