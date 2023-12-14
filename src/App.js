@@ -5,7 +5,7 @@ import AddTodoForm from './AddTodoForm';
 
 
 // View part of react
-function App() {
+const App = () => {
 
   const [todoList, setTodoList] = React.useState(
     []
