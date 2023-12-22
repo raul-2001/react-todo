@@ -12,10 +12,6 @@ const App = () => {
     []
   );
 
-  const [postTodoList, setPostTodoList] = React.useState(
-    []
-  );
-
   const [isLoading, setIsLoading] = React.useState(true);
 
   const [isError, setIsError] = React.useState(false);
@@ -53,7 +49,7 @@ const App = () => {
         return newTodos
 
       });
-
+      
       setTodoList(todos)
 
     } catch (error) {
@@ -67,16 +63,21 @@ const App = () => {
 
 
   React.useEffect(() => {
-
     fetchData();
   }, [])
 
   const addTodo = (records) => {
+    
+    try {
+      const response = postTodo(records[0].fields);
 
-    // set the todoList for Get
-    setTodoList([...todoList, records[0].fields]);
-    // set the postTodoList for Post 
-    setPostTodoList({...postTodoList, records});
+      if (response) {
+        // setTodoList([...todoList, response]);
+        fetchData();
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
   }
 
 
@@ -95,7 +96,7 @@ const App = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${process.env.REACT_APP_AIRTABLE_API_TOKEN}`,
         },
-        body: JSON.stringify(todo),
+        body: JSON.stringify({fields: todo}),
       }
   
       const url = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}/`;
@@ -110,6 +111,7 @@ const App = () => {
       }
 
       const responseData = await response.json();
+
       return responseData;
 
     } catch (error) {
@@ -118,11 +120,6 @@ const App = () => {
       return null;
     }
   }
-
-  React.useEffect(() => {
-    postTodo(postTodoList);
-  }, [postTodoList])
-
 
   // Deletes todo from Airtable table: 'DELETE'
   const deleteTodo = async (todo) => {
@@ -152,7 +149,7 @@ const App = () => {
       }
 
       const deletedData = await response.json();
-      console.log(deletedData)
+
       return deletedData;
       
 
