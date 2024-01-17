@@ -1,0 +1,128 @@
+.container {
+    height: 100vw;
+    padding: 20px;
+    /*background: #83a4d4; /* fallback for old browsers */
+    /*background: linear-gradient(to left, #b6fbff, #83a4d4);*/
+    background: #37ec96;
+    background: linear-gradient(to left, #004080, #adf8d5);
+    color: #171212;
+    }
+
+.headlinePrimary {
+    font-size: 48px;
+    font-weight: 300;
+    letter-spacing: 2px;
+}
+
+
+
+.button {
+    background: transparent;
+    border: 1px solid #171212;
+    padding: 5px;
+    
+    cursor: pointer;
+    transition: all 0.1s ease-in;
+}
+.button:hover {
+    background: #171212;
+    color: #ffffff;
+}
+.buttonSmall {
+    padding: 5px;
+    
+}
+
+.buttonLarge {
+    padding: 5px 14px 3px 14px;
+    font-size: 24px;
+    margin-left: 2px;
+}
+                    
+
+
+
+.ListItem {
+    display: flex;
+    align-items: center;
+    padding-bottom: 5px;
+}
+.ListItem > span {
+    padding: 0 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.ListItem > span > a {
+    color: inherit;
+}        
+
+.ul {
+    padding-left: 5px;
+}
+
+.searchForm {
+    padding: 10px 0 20px 0;
+    display: flex;
+    align-items: baseline;
+}
+
+.label {
+    border-top: 1px solid #171212;
+    border-left: 1px solid #171212;
+    padding-left: 5px;
+    font-size: 24px;
+}
+
+.input {
+   
+    border: 1px solid #171212;
+    background-color: transparent;
+    font-size: 24px;
+}
+
+
+/* Tablet styles (portrait) */
+@media only screen and (min-width: 600px){
+    .input {
+        font-size: 32px;
+    }
+
+    .label {
+        font-size: 34px;
+    }
+}
+
+/* Tablet styles (landscape) */
+@media only screen and (min-width: 768px) {
+    
+}
+
+
+/* Desctop styles */
+@media only screen and (min-width: 1024px) {
+    .input {
+        font-size: 34px;
+    }
+}
+
+/* Large desctop styles  */
+@media only screen and (min-width: 1200px) {
+
+}
+
+@media only screen and (max-width: 600px) {
+    .input {
+        font-size: 18px;
+    }
+
+    .label {
+        font-size: 18px;
+    }
+
+    .buttonLarge {
+        font-size: 14px;
+        margin-left: 2px;
+    }
+}
