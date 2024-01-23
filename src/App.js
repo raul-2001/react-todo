@@ -2,6 +2,8 @@ import React from 'react';
 import TodoList from './TodoList';
 import AddTodoForm from './AddTodoForm';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import styles from  './TodoListItem.module.css';
+
 
 
 
@@ -191,15 +193,15 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={
-        <>
-          <h1>Todo List</h1>
+        <div className={styles.container}>
+          <h1 className={styles.headlinePrimary}>Todo List</h1>
           <AddTodoForm onAddTodo={addTodo} />
           <hr />
           {isError && <p>Something went wrong ...</p>}
           {isLoading ? <div>Loading ...</div> :
             (<TodoList todoList={todoList} onRemoveTodo={removeTodo} />)
           }
-        </> 
+        </div> 
         } />
         <Route path="/new" element={<>
           <h1>New Todo List</h1>
