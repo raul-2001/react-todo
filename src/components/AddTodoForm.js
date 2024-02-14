@@ -1,6 +1,8 @@
 import React from "react";
 import InputWithLabel from "./InputWithLabel";
-import styles from './TodoListItem.module.css'
+import styles from './TodoListItem.module.css';
+import PropTyeps from 'prop-types';
+
 
 // Funtion decleared
 const AddTodoForm = ({onAddTodo}) => { 
@@ -26,10 +28,14 @@ const AddTodoForm = ({onAddTodo}) => {
         <InputWithLabel todoTitle={todoTitle} onChange={handleTitleChange}>
             <strong>Title: </strong>
         </InputWithLabel>
-        <button className={styles.buttonLarge} type="submit" >Add</button>
+        <button data-testid="submit_button" className={styles.buttonLarge} type="submit" >Add</button>
     </form>
 );
 }
+
+AddTodoForm.propTypes = {
+    onAddTodo: PropTyeps.func,
+} 
 
 
 export default AddTodoForm;

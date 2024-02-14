@@ -1,5 +1,6 @@
 import React from "react";
-import styles from './TodoListItem.module.css'
+import styles from './TodoListItem.module.css';
+import PropTypes from 'prop-types';
 
 const InputWithLabel = (props) => {
 
@@ -10,8 +11,9 @@ const InputWithLabel = (props) => {
 
         return(
     <>
-        <label className={styles.label} htmlFor="todoTitle">{props.children} </label>
+        <label data-testid="labelid" className={styles.label} htmlFor="todoTitle">{props.children} </label>
         <input 
+            
             id="todoTitle" 
             type="text" 
             name="title" 
@@ -22,6 +24,10 @@ const InputWithLabel = (props) => {
             />
     </>
     );
+}
+
+InputWithLabel.prototype = {
+    children: PropTypes.element.isRequired,
 }
 
 
