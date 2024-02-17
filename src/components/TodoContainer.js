@@ -1,16 +1,21 @@
 import React, { useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import TodoList from './TodoList';
 import AddTodoForm from './AddTodoForm';
 import styles from './TodoListItem.module.css';
 
 
-const TodoContainer = ({ tableName }) => {
+const TodoContainer = ({ tableName1 }) => {
   const [todoList, setTodoList] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [isError, setIsError] = React.useState(false);
   const [sortOrder, setSortOrder] = React.useState('asc');
-  console.log("tableName in todoContainer =>>", tableName)
+
+
+  
+  const {tableName} = useParams();
+
+  // console.log("tableName in todoContainer =>>", {tableName})
 
   // GET 
   const fetchData = async () => {
@@ -38,7 +43,6 @@ const TodoContainer = ({ tableName }) => {
       }
 
       const data = await response.json();
-      console.log("fetched data ==>>", data)
       const todos = data.records.map((todo) => {
         const newTodos = {
           id: todo.id,
@@ -66,10 +70,10 @@ const TodoContainer = ({ tableName }) => {
     fetchData();
   }, [tableName])
 
-  const addTodo = (records) => {
+  const addTodo = async (records) => {
 
     try {
-      const response = postTodo(records[0].fields);
+      const response = await postTodo(records[0].fields);
 
       if (response) {
         // setTodoList([...todoList, response]);
@@ -88,6 +92,8 @@ const TodoContainer = ({ tableName }) => {
       if (todo.length === 0) {
         return
       };
+
+      console.log("post data =>>", todo)
 
       const options = {
         method: 'POST',
@@ -204,7 +210,7 @@ const TodoContainer = ({ tableName }) => {
       const sorted = [...todoList].sort((a, b) => {
 
         if (typeof a[col] === 'string' || a[col] instanceof String) {
-          console.log("typeof a[col] === string");
+
           return(
 
               a[col].toLowerCase() < b[col].toLowerCase() ? 1 : -1
@@ -227,7 +233,7 @@ const TodoContainer = ({ tableName }) => {
   return (
     <section>
       <button>
-        <Link to="/" style={{ color: "black", textDecoration: "none" }}>
+        <Link to="/TablesList" style={{ color: "black", textDecoration: "none" }}>
           Back
         </Link>
       </button>

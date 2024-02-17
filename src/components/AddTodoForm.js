@@ -14,10 +14,20 @@ const AddTodoForm = ({onAddTodo}) => {
         setTodoTitle(newTodoTitle);
     }
 
+    // completeTime = 10 days plus
+    const newDate = new Date();  
+    newDate.setDate(newDate.getDate() + 10);
+    const completeTime = newDate.toISOString().slice(0, 10);
+
     const handleAddTodo = (event) =>{
         event.preventDefault();
         const records = [{
-            fields:{title: todoTitle},
+            fields:{
+                title: todoTitle,
+                completeAd: new Date().toISOString().slice(0, 10),
+                createdTime: completeTime,
+                completed: false,
+            },
         }];
         onAddTodo(records);
         setTodoTitle("");

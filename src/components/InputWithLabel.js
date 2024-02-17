@@ -10,19 +10,19 @@ const InputWithLabel = (props) => {
     })
 
         return(
-    <>
-        <label data-testid="labelid" className={styles.label} htmlFor="todoTitle">{props.children} </label>
-        <input 
-            
-            id="todoTitle" 
-            type="text" 
-            name="title" 
-            value={props.todoTitle} 
-            onChange={props.onChange}
-            ref={inputRef}
-            className={styles.input}
-            />
-    </>
+            <>
+                <label data-testid="labelid" className={styles.label} htmlFor="todoTitle">{props.children} </label>
+                <input 
+                    
+                    id="todoTitle" 
+                    type="text" 
+                    name="title" 
+                    value={props.todoTitle} 
+                    onChange={props.onChange}
+                    ref={inputRef}
+                    className={styles.input}
+                    />
+            </>
     );
 }
 
