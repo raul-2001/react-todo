@@ -70,10 +70,10 @@ const TodoContainer = ({ tableName1 }) => {
     fetchData();
   }, [tableName])
 
-  const addTodo = (records) => {
+  const addTodo = async (records) => {
 
     try {
-      const response = postTodo(records[0].fields);
+      const response = await postTodo(records[0].fields);
 
       if (response) {
         // setTodoList([...todoList, response]);

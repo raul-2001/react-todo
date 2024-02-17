@@ -6,6 +6,7 @@ const CreateNewTodoList = () => {
 
     const [tableResponse, setTableResponse] = useState([]);
     const [TableTitle, setTableTitle] = React.useState('');
+    const [showElemet, setShowElement] = useState(false);
     const [isLoading, setIsLoading] = React.useState(true);
     const [isError, setIsError] = React.useState(false);
 
@@ -105,7 +106,8 @@ const CreateNewTodoList = () => {
               throw new Error(message);
             }
       
-            console.log(response)
+            setShowElement(true);
+            // console.log(response)
             const responseData = await response.json();
 
 
@@ -144,8 +146,8 @@ const CreateNewTodoList = () => {
             </form>
             
             {isError ? <p>Something went wrong ...</p> : 
-           
-            <h1>Created Table: {tableResponse}</h1>} 
+          
+            showElemet ? <h1>Created Table: {tableResponse}</h1> : <h1></h1>} 
             
         </div>
     )
