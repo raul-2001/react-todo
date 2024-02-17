@@ -1,54 +1,56 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import TodoList from './TodoList';
 import AddTodoForm from './AddTodoForm';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import styles from  './TodoListItem.module.css';
-import { Link } from 'react-router-dom';
+import styles from './TodoListItem.module.css';
 
 
 const TodoContainer = ({ tableName }) => {
+  const [todoList, setTodoList] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [isError, setIsError] = React.useState(false);
+  const [sortOrder, setSortOrder] = React.useState('asc');
+  console.log("tableName in todoContainer =>>", tableName)
 
-
-
-    const [todoList, setTodoList] = React.useState([]);
-
-    const [isLoading, setIsLoading] = React.useState(true);
-
-    const [isError, setIsError] = React.useState(false);
-
-    // GET 
-    const fetchData = async () => {
-
+  // GET 
+  const fetchData = async () => {
     setIsLoading(true);
-    
+
     const options = {
       method: "GET",
       headers: {
         'Authorization': `Bearer ${process.env.REACT_APP_AIRTABLE_API_TOKEN}`
       }
     }
+
+    //const sordtedData = "?view=Grid%20view";
     
-    const url = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}/`;
+    const sordtedData2 = `?sort[0][field]=title&sort[0][direction]=asc&sort[2][field]=completeAd&sort[2][direction]=asc`;
+
+    const url = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${tableName}/${sordtedData2}`;
 
     try {
       const response = await fetch(url, options);
-      
+
       if (!response.ok) {
         const message = `Error: ${response.status}`;
         throw new Error(message);
       }
 
       const data = await response.json();
-
+      console.log("fetched data ==>>", data)
       const todos = data.records.map((todo) => {
         const newTodos = {
           id: todo.id,
           title: todo.fields.title,
+          completeAd: todo.fields.completeAd,
+          createdTime: todo.fields.createdTime,
+          completed: todo.fields.completed || false,
         }
-
-        return newTodos
-
+        
+        return newTodos;
       });
+
       
       setTodoList(todos)
 
@@ -58,36 +60,33 @@ const TodoContainer = ({ tableName }) => {
     } finally {
       setIsLoading(false);
     }
-    
-    };
+  };
 
+  React.useEffect(() => {
+    fetchData();
+  }, [tableName])
 
-    React.useEffect(() => {
+  const addTodo = (records) => {
+
+    try {
+      const response = postTodo(records[0].fields);
+
+      if (response) {
+        // setTodoList([...todoList, response]);
         fetchData();
-    }, [tableName])
-
-    const addTodo = (records) => {
-        
-        try {
-        const response = postTodo(records[0].fields);
-
-        if (response) {
-            // setTodoList([...todoList, response]);
-            fetchData();
-        }
-        } catch (error) {
-        console.log(error.message);
-        }
+      }
+    } catch (error) {
+      console.log(error.message);
     }
-
+  }
 
   // Creates new todo into Airtable table: 'POST'
   const postTodo = async (todo) => {
 
     try {
 
-      if (todo.length === 0 ) {
-        return 
+      if (todo.length === 0) {
+        return
       };
 
       const options = {
@@ -96,10 +95,10 @@ const TodoContainer = ({ tableName }) => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${process.env.REACT_APP_AIRTABLE_API_TOKEN}`,
         },
-        body: JSON.stringify({fields: todo}),
+        body: JSON.stringify({ fields: todo }),
       }
-  
-      const url = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}/`;
+
+      const url = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${tableName}/`;
 
       const response = await fetch(
         url, options
@@ -127,7 +126,7 @@ const TodoContainer = ({ tableName }) => {
     try {
 
       if (!todo) {
-        return 
+        return
       };
 
       const options = {
@@ -136,8 +135,8 @@ const TodoContainer = ({ tableName }) => {
           'Authorization': `Bearer ${process.env.REACT_APP_AIRTABLE_API_TOKEN}`,
         },
       }
-  
-      const url = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}/${todo}`;
+
+      const url = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${tableName}/${todo}`;
 
       const response = await fetch(
         url, options
@@ -151,7 +150,7 @@ const TodoContainer = ({ tableName }) => {
       const deletedData = await response.json();
 
       return deletedData;
-      
+
 
     } catch (error) {
       setIsError(error);
@@ -159,13 +158,12 @@ const TodoContainer = ({ tableName }) => {
       return null;
     }
   }
-  
-  
+
   const removeTodo = (id) => {
     const updatedList = todoList.filter(
       removedItem => removedItem.id !== id
     );
-    
+
     // id for DELETE method
     const deletedList = todoList.filter(
       remitem => remitem.id === id
@@ -177,32 +175,76 @@ const TodoContainer = ({ tableName }) => {
     setTodoList(updatedList);
   }
 
-  // useEffect for storing data to local storage
-  React.useEffect(() => {
-    
-    if (isLoading) {
-      localStorage.setItem('savedTodoList', JSON.stringify(todoList));
-    }
 
-  }, [todoList, isLoading])
+  const toggleTodo = useCallback((col) => {
+
+    if (sortOrder === 'asc') {
+      const sorted = [...todoList].sort((a, b) => {
+
+        if (typeof a[col] === 'string' || a[col] instanceof String) {
+          // console.log("typeof a[col] === string");
+          return(
+
+              a[col].toLowerCase() > b[col].toLowerCase() ? 1 : -1
+
+          )
+        } else {
+          return new Date(a[col]) -  new Date(b[col])
+        }
+        }
+
+      );
+      setTodoList(sorted);
+      setSortOrder("dsc");
+    }
+    
+
+
+    if (sortOrder === 'dsc') {
+      const sorted = [...todoList].sort((a, b) => {
+
+        if (typeof a[col] === 'string' || a[col] instanceof String) {
+          console.log("typeof a[col] === string");
+          return(
+
+              a[col].toLowerCase() < b[col].toLowerCase() ? 1 : -1
+
+          )
+        } else {
+          return new Date(b[col]) -  new Date(a[col])
+        }
+
+      }
+        
+      );
+      setTodoList(sorted);
+      setSortOrder("asc")
+    }
+    
+  }, [todoList, sortOrder]);
+
 
   return (
     <section>
-        <button>
-            <Link to="/" style={{color: "black", textDecoration: "none"}}>
-                Back
-            </Link>
-        </button>
-        <h1 className={styles.headlinePrimary}>Todo List</h1>
-        <div className={styles.container}>
-          
-          <AddTodoForm onAddTodo={addTodo} />
-          <hr />
-          {isError && <p>Something went wrong ...</p>}
-          {isLoading ? <div>Loading ...</div> :
-            (<TodoList todoList={todoList} onRemoveTodo={removeTodo} />)
-          }
-        </div> 
+      <button>
+        <Link to="/" style={{ color: "black", textDecoration: "none" }}>
+          Back
+        </Link>
+      </button>
+      <h1 className={styles.headlinePrimary}>Todo List</h1>
+      <div className={styles.container}>
+        <AddTodoForm onAddTodo={addTodo} />
+        <hr />
+        {isError && <p>Something went wrong ...</p>}
+        {isLoading ? <div>Loading ...</div> :
+          (<TodoList
+          todoList={todoList}
+          onRemoveTodo={removeTodo} 
+          onToggleTodo={toggleTodo}
+
+          />)
+        }
+      </div>
     </section>
   );
 }
